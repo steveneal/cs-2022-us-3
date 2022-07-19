@@ -16,7 +16,7 @@ public class Rfq implements Serializable {
     private Double price;
     private String side;
 
-
+    //{'id': '123ABC', 'traderId': 3351266293154445953, 'entityId': 5561279226039690843, 'instrumentId': 'AT0000383864', 'qty': 250000, 'price': 1.58, 'side': 'B' }
     public static Rfq fromJson(String json) {
         //TODO: build a new RFQ setting all fields from data passed in the RFQ json message
         // convert Json to Map
@@ -32,7 +32,6 @@ public class Rfq implements Serializable {
         ret.setPrice(Double.parseDouble(fields.get("price")));
         ret.setSide(fields.get("side"));
 
-        System.out.println(ret);
         return ret;
     }
 
