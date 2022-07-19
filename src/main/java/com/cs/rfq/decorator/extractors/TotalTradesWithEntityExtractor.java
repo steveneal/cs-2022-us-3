@@ -19,6 +19,7 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
         long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+        long pastMonthMs = DateTime.now().withMillis(todayMs).minusWeeks(4).getMillis();
 
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityId").equalTo(rfq.getIsin()))
@@ -27,11 +28,13 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long tradesToday = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(todayMs))).count();
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
+        long tradesPastMonth = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastMonthMs))).count();
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradesWithEntityToday, tradesToday);
         results.put(tradesWithEntityPastWeek, tradesPastWeek);
         results.put(tradesWithEntityPastYear, tradesPastYear);
+        results.put(tradesWithEntityPastMonth, tradesPastMonth);
         return results;
     }
 
