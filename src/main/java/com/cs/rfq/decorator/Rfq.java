@@ -32,6 +32,7 @@ public class Rfq implements Serializable {
         ret.setPrice(Double.parseDouble(fields.get("price")));
         ret.setSide(fields.get("side"));
 
+        System.out.println(ret);
         return ret;
     }
 

@@ -49,13 +49,13 @@ public class RfqProcessor {
     public void startSocketListener() throws InterruptedException {
         //TODO: stream data from the input socket on localhost:9000
         JavaDStream<String> lines = streamingContext.socketTextStream("localhost", 9000);
-        JavaDStream<String> data = lines.flatMap(x -> Arrays.asList(x.split(" ")).iterator());
 
         //TODO: convert each incoming line to a Rfq object and call processRfq method with it
         //not sure if above lines converted input into json format so will need ot check that
-        data.foreachRDD(rdd -> {
+        lines.foreachRDD(rdd -> {
             rdd.collect().forEach(line -> processRfq(Rfq.fromJson(line)));
         });
+
 
         //TODO: start the streaming context
         streamingContext.start();
