@@ -69,13 +69,8 @@ public class RfqProcessor {
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
         //TODO: get metadata from each of the extractors
-        TotalTradesWithEntityExtractor ttwee = new TotalTradesWithEntityExtractor();
-        Map<RfqMetadataFieldNames,Object> ttweeMap = ttwee.extractMetaData(rfq,session,trades);
-        metadata.putAll(ttweeMap);
-
-        VolumeTradedWithEntityYTDExtractor vtwee = new VolumeTradedWithEntityYTDExtractor();
-        Map<RfqMetadataFieldNames,Object> vtweeMap = vtwee.extractMetaData(rfq,session,trades);
-        metadata.putAll(vtweeMap);
+        metadata.putAll(extractors.get(0).extractMetaData(rfq,session,trades));
+        metadata.putAll(extractors.get(1).extractMetaData(rfq,session,trades));
 
         //TODO: publish the metadata
         publisher.publishMetadata(metadata);
