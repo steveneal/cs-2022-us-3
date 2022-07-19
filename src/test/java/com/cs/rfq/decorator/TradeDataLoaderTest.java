@@ -3,6 +3,7 @@ package com.cs.rfq.decorator;
 import com.cs.rfq.decorator.extractors.AbstractSparkUnitTest;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,11 +20,16 @@ public class TradeDataLoaderTest extends AbstractSparkUnitTest {
     @BeforeEach
     public void setup() {
         String filePath = getClass().getResource("loader-test-trades.json").getPath();
+        SparkSession session = SparkSession.builder()
+                .appName("TradeDataLoaderTestSession")
+                .master("local")
+                .getOrCreate();
         trades = new TradeDataLoader().loadTrades(session, filePath);
     }
 
     @Test
     public void loadTradeRecords() {
+        // trades.show();
         assertEquals(5, trades.count());
     }
 
@@ -33,11 +39,11 @@ public class TradeDataLoaderTest extends AbstractSparkUnitTest {
 
         Long traderId = trades.first().getLong(0);
         Long entityId = trades.first().getLong(1);
-        String securityId = trades.first().getString(2);
-        Long lastQty = trades.first().getLong(3);
-        Double lastPx = trades.first().getDouble(4);
-        Date tradeDate = trades.first().getDate(5);
-        String currency = trades.first().getString(6);
+        String securityId = trades.first().getString(5);
+        Long lastQty = trades.first().getLong(7);
+        Double lastPx = trades.first().getDouble(8);
+        Date tradeDate = trades.first().getDate(9);
+        String currency = trades.first().getString(14);
 
         //2018-06-09
         Date expectedTradeDate = new Date(new DateTime().withYear(2018).withMonthOfYear(6).withDayOfMonth(9).withMillisOfDay(0).getMillis());
