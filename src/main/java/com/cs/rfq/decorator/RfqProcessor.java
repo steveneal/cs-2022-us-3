@@ -39,7 +39,7 @@ public class RfqProcessor {
 
         //TODO: use the TradeDataLoader to load the trade data archives
         TradeDataLoader tload = new TradeDataLoader();
-        //trades = tload.loadTrades(session,);
+        trades = tload.loadTrades(session,"src/test/resources/trades/trades.json");
 
         //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
@@ -53,7 +53,9 @@ public class RfqProcessor {
 
         //TODO: convert each incoming line to a Rfq object and call processRfq method with it
         //not sure if above lines converted input into json format so will need ot check that
-
+        data.foreachRDD(rdd -> {
+            rdd.collect().forEach(line -> processRfq(Rfq.fromJson(line)));
+        });
 
         //TODO: start the streaming context
         streamingContext.start();
@@ -67,7 +69,13 @@ public class RfqProcessor {
         Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
 
         //TODO: get metadata from each of the extractors
-        //metadata.put(RfqMetadataFieldNames.tradesWithEntityToday,);
+        TotalTradesWithEntityExtractor ttwee = new TotalTradesWithEntityExtractor();
+        Map<RfqMetadataFieldNames,Object> ttweeMap = ttwee.extractMetaData(rfq,session,trades);
+        metadata.putAll(ttweeMap);
+
+        VolumeTradedWithEntityYTDExtractor vtwee = new VolumeTradedWithEntityYTDExtractor();
+        Map<RfqMetadataFieldNames,Object> vtweeMap = vtwee.extractMetaData(rfq,session,trades);
+        metadata.putAll(vtweeMap);
 
         //TODO: publish the metadata
         publisher.publishMetadata(metadata);
