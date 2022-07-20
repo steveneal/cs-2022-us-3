@@ -39,8 +39,8 @@ public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
 
     @Test
     public void extractTotalTradesWithEntityByDate() {
-        TotalTradesWithEntityExtractor extractorByDay = new TotalTradesWithEntityExtractor();
-        Map<RfqMetadataFieldNames, Object> output = extractorByDay.extractMetaData(rfq,session,data);
+        TotalTradesWithEntityExtractor extractor = new TotalTradesWithEntityExtractor();
+        Map<RfqMetadataFieldNames, Object> output = extractor.extractMetaData(rfq,session,data);
         System.out.println(output);
         // To-Do: implement unit test
     }
