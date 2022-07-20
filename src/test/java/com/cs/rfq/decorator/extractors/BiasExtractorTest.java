@@ -7,8 +7,12 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
+
 
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BiasExtractorTest extends AbstractSparkUnitTest {
     String string;
@@ -19,9 +23,9 @@ public class BiasExtractorTest extends AbstractSparkUnitTest {
     @BeforeEach public void setUp() {
         string = "{" +
                 "'id': '123ABC', " +
-                "'traderId': 3351266293154445953, " +
+                "'traderId': 7704615737577737110, " +
                 "'entityId': 5561279226039690843, " +
-                "'instrumentId': 'AT0000383864', " +
+                "'instrumentId': 'AT0000A0VRQ6', " +
                 "'qty': 250000, " +
                 "'price': 1.58, " +
                 "'side': 'B' " +
@@ -29,7 +33,7 @@ public class BiasExtractorTest extends AbstractSparkUnitTest {
 
         rfq = Rfq.fromJson(string);
 
-        String filePath = getClass().getResource("test-trades.json").getPath();
+        String filePath = getClass().getResource("volume-traded-1.json").getPath();
         session = SparkSession.builder()
                 .appName("BiasExtractorTestSession")
                 .master("local")
@@ -40,6 +44,9 @@ public class BiasExtractorTest extends AbstractSparkUnitTest {
     @Test
     public void biasExtractorTest() {
         // To-Do: implement unit test
-
+        BiasExtractor testBiasExtractor = new BiasExtractor();
+        Map<RfqMetadataFieldNames, Object> output = testBiasExtractor.extractMetaData(rfq,session,data);
+        assertEquals(0.5,output.get(biasByMonth));
+        assertEquals(1.0, output.get(biasByWeek));
     }
 }

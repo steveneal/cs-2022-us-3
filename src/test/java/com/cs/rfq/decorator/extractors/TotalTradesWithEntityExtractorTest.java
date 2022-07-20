@@ -14,7 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
+    String string;
     Rfq rfq;
+    Dataset<Row> data;
     Dataset<Row> trades;
 
     @BeforeEach public void setUp() {
