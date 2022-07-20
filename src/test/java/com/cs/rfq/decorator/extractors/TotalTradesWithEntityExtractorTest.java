@@ -10,37 +10,39 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
     String string;
     Rfq rfq;
     Dataset<Row> data;
-    SparkSession session;
+    Dataset<Row> trades;
 
     @BeforeEach public void setUp() {
-        string = "{" +
-                "'id': '123ABC', " +
-                "'traderId': 3351266293154445953, " +
-                "'entityId': 5561279226039690843, " +
-                "'instrumentId': 'AT0000383864', " +
-                "'qty': 250000, " +
-                "'price': 1.58, " +
-                "'side': 'B' " +
-                "}";
+        rfq = new Rfq();
+        rfq.setEntityId(5561279226039690843L);
+        rfq.setIsin("AT0000383864");
 
-        rfq = Rfq.fromJson(string);
-
-        String filePath = getClass().getResource("test-trades.json").getPath();
-        session = SparkSession.builder()
-                .appName("TotalTradesByEntitySession")
-                .master("local")
-                .getOrCreate();
-        data = new TradeDataLoader().loadTrades(session, filePath);
+        String filePath = "src/test/resources/trades/trades.json";
+        trades = new TradeDataLoader().loadTrades(session, filePath);
     }
 
     @Test
     public void extractTotalTradesWithEntityByDate() {
-        TotalTradesWithEntityExtractor extractorByDay = new TotalTradesWithEntityExtractor();
-        Map<RfqMetadataFieldNames, Object> output = extractorByDay.extractMetaData(rfq,session,data);
-        System.out.println(output);
+        TotalTradesWithEntityExtractor extractor = new TotalTradesWithEntityExtractor();
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object year = meta.get(RfqMetadataFieldNames.tradesWithEntityPastYear);
+        Object yearToDate = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object month = meta.get(RfqMetadataFieldNames.tradesWithEntityPastMonth);
+        Object week = meta.get(RfqMetadataFieldNames.tradesWithEntityPastWeek);
+        Object today = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+
+        assertEquals(69L, year);
+        assertEquals(0L, week);
+        assertEquals(2L, month);
+        assertEquals(0L, today);
     }
 }
