@@ -27,7 +27,7 @@ public class InstrumentLiquidityTest extends AbstractSparkUnitTest {
 
     @Test
     public void checkLiquidity(){
-        InstrumentLiquidity extractor = new InstrumentLiquidity();
+        InstrumentLiquidityExtractor extractor = new InstrumentLiquidityExtractor();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 

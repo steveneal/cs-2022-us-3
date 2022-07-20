@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InstrumentLiquidity implements RfqMetadataExtractor{
+public class InstrumentLiquidityExtractor implements RfqMetadataExtractor{
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
