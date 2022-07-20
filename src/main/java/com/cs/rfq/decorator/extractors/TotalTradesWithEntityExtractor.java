@@ -13,6 +13,9 @@ import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
 public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
 
+    // fields for testing
+
+
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
