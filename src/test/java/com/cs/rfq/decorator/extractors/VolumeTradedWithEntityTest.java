@@ -4,6 +4,7 @@ import com.cs.rfq.decorator.Rfq;
 import com.cs.rfq.decorator.TradeDataLoader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,8 @@ public class VolumeTradedWithEntityTest {
     Rfq rfq;
     Dataset<Row> trades;
 
+    SparkSession session;
+
     @BeforeEach
     public void setUp() {
         rfq = new Rfq();
@@ -23,6 +26,10 @@ public class VolumeTradedWithEntityTest {
         rfq.setIsin("AT0000383864");
 
         String filePath = "src/test/resources/trades/trades.json";
+        session = SparkSession.builder()
+                .appName("BiasExtractorTestSession")
+                .master("local")
+                .getOrCreate();
         trades = new TradeDataLoader().loadTrades(session, filePath);
     }
     @Test
@@ -36,8 +43,8 @@ public class VolumeTradedWithEntityTest {
         Object week = meta.get(RfqMetadataFieldNames.volumeTradedWithEntityPastWeek);
         Object year = meta.get(RfqMetadataFieldNames.volumeTradedWithEntityPastYear);
 
-        assertEquals(69L, year);
-        assertEquals(0L, week);
+        assertEquals(731L, year);
+        assertEquals(15L, week);
         assertEquals(50L, month);
     }
 }

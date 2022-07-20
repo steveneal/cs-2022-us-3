@@ -16,6 +16,8 @@ public class VolumeTradedWithEntityYTDExtractorTest extends AbstractSparkUnitTes
     private Rfq rfq;
     Dataset<Row> trades;
 
+
+
     @BeforeEach
     public void setup() {
         rfq = new Rfq();
