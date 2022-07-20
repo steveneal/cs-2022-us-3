@@ -1,11 +1,13 @@
 package com.cs.rfq.decorator.extractors;
 
 import com.cs.rfq.decorator.Rfq;
+import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
         long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
         long pastMonthMs = DateTime.now().withMillis(todayMs).minusWeeks(4).getMillis();
-
+        // security id = instrument id
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityId").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
@@ -32,6 +34,11 @@ public class TotalTradesWithEntityExtractor implements RfqMetadataExtractor {
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastYearMs))).count();
         long tradesPastMonth = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastMonthMs))).count();
+
+        Dataset<Row> tradesPastWeekSet = filtered.filter(trades.col("TradeDate").$greater(new Date(pastWeekMs)));
+        Dataset<Row> tradesPastWeekQtyAndPrices = tradesPastWeekSet.select("LastQty", "LastPx");
+
+
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(tradesWithEntityToday, tradesToday);
