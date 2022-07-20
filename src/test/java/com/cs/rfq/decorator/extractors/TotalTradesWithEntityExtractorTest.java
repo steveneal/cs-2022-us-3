@@ -24,8 +24,17 @@ public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
         rfq.setEntityId(5561279226039690843L);
         rfq.setIsin("AT0000383864");
 
+
         String filePath = "src/test/resources/trades/trades.json";
         trades = new TradeDataLoader().loadTrades(session, filePath);
+
+        rfq = Rfq.fromJson(string);
+        session = SparkSession.builder()
+                .appName("TotalTradesByEntitySession")
+                .master("local")
+                .getOrCreate();
+        data = new TradeDataLoader().loadTrades(session, filePath);
+
     }
 
     @Test
