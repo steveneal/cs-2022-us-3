@@ -32,6 +32,7 @@ public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
     public void extractTotalTradesWithEntityByDate() {
         TotalTradesWithEntityExtractor extractor = new TotalTradesWithEntityExtractor();
 
+
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object year = meta.get(RfqMetadataFieldNames.tradesWithEntityPastYear);
@@ -44,5 +45,6 @@ public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
         assertEquals(0L, week);
         assertEquals(2L, month);
         assertEquals(0L, today);
+
     }
 }
