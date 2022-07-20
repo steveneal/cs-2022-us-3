@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.tradesWithEntityPastMonth;
+import static org.apache.spark.sql.functions.avg;
 
 public class AveragePriceExtractor implements RfqMetadataExtractor {
     @Override
@@ -25,19 +26,11 @@ public class AveragePriceExtractor implements RfqMetadataExtractor {
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()));
 
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
-
-        // find the sum of all unit prices
-        String query = String.format("SELECT sum(LastPx) from trade where SecurityId='%s' AND TradeDate >= '%s'",
-                rfq.getIsin(),
-                tradesPastWeek);
-
-        Dataset<Row> sqlQueryResults = session.sql(query);
-        Double totalPrice = (Double) sqlQueryResults.first().get(0);
-
-        //Double avgPrice = totalPrice / tradesPastWeek;
+        Dataset<Row> avgPriceSet = filtered.agg(avg(filtered.col("LastPx")));
+        Double avgPrice = avgPriceSet.first().getDouble(0);
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        results.put(averagePriceTradedByEntityPastWeek, 0);
+        results.put(averagePriceTradedByEntityPastWeek, avgPrice);
         return results;
     }
 }
