@@ -11,6 +11,7 @@ import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Console;
 import java.util.*;
 
 import static org.apache.spark.sql.functions.sum;
@@ -43,6 +44,8 @@ public class RfqProcessor {
         extractors.add(new InstrumentLiquidityExtractor());
         extractors.add(new AveragePriceExtractor());
         extractors.add(new VolumeTradedWithEntity());
+
+
     }
 
     public void startSocketListener() throws InterruptedException {
@@ -73,5 +76,14 @@ public class RfqProcessor {
 
         //TODO: publish the metadata
         publisher.publishMetadata(metadata);
+        System.out.println("Do you want to accept the trade? Enter Yes or No.");
+        Scanner console = new Scanner(System.in);
+        String input = console.next();
+        if (input.toUpperCase().equals("YES")) {
+            System.out.println("You have accepted the trade.");
+        } else {
+            System.out.println("You have rejected the trade.");
+        }
+
     }
 }
