@@ -4,6 +4,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.Durations;
+import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 
 public class RfqDecoratorMain {
@@ -24,8 +25,24 @@ public class RfqDecoratorMain {
                 .getOrCreate();
 
         //TODO: create a new RfqProcessor and set it listening for incoming RFQs
+        /*
         RfqProcessor rfqProc = new RfqProcessor(session,jssc);
         rfqProc.startSocketListener();
+        */
+
+        KafkaRfqProcessor processor = new KafkaRfqProcessor(session, jssc);
+        JavaDStream<String> stream = processor.initRfqStream();
+        RfqProcessor rProc = new RfqProcessor(session, jssc);
+
+        stream.foreachRDD(rdd -> {
+            rdd.collect().stream().forEach(i -> rProc.processRfq(Rfq.fromJson(i)));
+
+        });
+
+        System.out.println("Listening for RFQs");
+        jssc.start();
+        jssc.awaitTermination();
+
     }
 
 }
