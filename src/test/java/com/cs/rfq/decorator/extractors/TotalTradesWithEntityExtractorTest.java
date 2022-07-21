@@ -41,7 +41,7 @@ public class TotalTradesWithEntityExtractorTest extends AbstractSparkUnitTest {
         Object week = meta.get(RfqMetadataFieldNames.tradesWithEntityPastWeek);
         Object today = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
 
-        assertEquals(69L, year);
+        assertEquals(68L, year);
         assertEquals(0L, week);
         assertEquals(2L, month);
         assertEquals(0L, today);

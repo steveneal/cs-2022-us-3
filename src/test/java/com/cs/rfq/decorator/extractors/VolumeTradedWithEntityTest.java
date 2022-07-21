@@ -43,8 +43,8 @@ public class VolumeTradedWithEntityTest {
         Object week = meta.get(RfqMetadataFieldNames.volumeTradedWithEntityPastWeek);
         Object year = meta.get(RfqMetadataFieldNames.volumeTradedWithEntityPastYear);
 
-        assertEquals(731L, year);
-        assertEquals(15L, week);
-        assertEquals(50L, month);
+        assertEquals(729L, year);
+        assertEquals(13L, week);
+        assertEquals(48L, month);
     }
 }
