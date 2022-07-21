@@ -79,20 +79,5 @@ public class RfqProcessor {
 
         //TODO: publish the metadata
         publisher.publishMetadata(metadata);
-        System.out.println("Do you want to accept the trade? Enter Yes or No.");
-        Scanner console = new Scanner(System.in);
-        String input = console.next();
-        if (input.toUpperCase().equals("YES")) {
-            System.out.println("You have accepted the trade.");
-            try (PrintStream fileWriter = new PrintStream(new File("AcceptedTrades.json"))) {
-                fileWriter.println(rfq);
-            } catch (FileNotFoundException e) {
-                System.err.println("Unable to save trade to file!");
-            }
-
-        } else {
-            System.out.println("You have rejected the trade.");
-        }
-
     }
 }
