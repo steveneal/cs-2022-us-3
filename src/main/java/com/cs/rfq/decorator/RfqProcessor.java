@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Console;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 import static org.apache.spark.sql.functions.sum;
@@ -81,6 +84,12 @@ public class RfqProcessor {
         String input = console.next();
         if (input.toUpperCase().equals("YES")) {
             System.out.println("You have accepted the trade.");
+            try (PrintStream fileWriter = new PrintStream(new File("AcceptedTrades.json"))) {
+                fileWriter.println(rfq);
+            } catch (FileNotFoundException e) {
+                System.err.println("Unable to save trade to file!");
+            }
+
         } else {
             System.out.println("You have rejected the trade.");
         }
