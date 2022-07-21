@@ -46,7 +46,7 @@ public class BiasExtractorTest extends AbstractSparkUnitTest {
         // To-Do: implement unit test
         BiasExtractor testBiasExtractor = new BiasExtractor();
         Map<RfqMetadataFieldNames, Object> output = testBiasExtractor.extractMetaData(rfq,session,data);
-        assertEquals(0.5,output.get(biasByMonth));
+        assertEquals(1.0,output.get(biasByMonth));
         assertEquals(1.0, output.get(biasByWeek));
     }
 }
