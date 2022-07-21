@@ -27,7 +27,14 @@ public class AveragePriceExtractor implements RfqMetadataExtractor {
 
         long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs))).count();
         Dataset<Row> avgPriceSet = filtered.agg(avg(filtered.col("LastPx")));
-        Double avgPrice = avgPriceSet.first().getDouble(0);
+
+        Double avgPrice = 0D;
+
+        try {
+            avgPrice = avgPriceSet.first().getDouble(0);
+        } catch (NullPointerException e) {
+            avgPrice = 0D;
+        }
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(averagePriceTradedByEntityPastWeek, avgPrice);

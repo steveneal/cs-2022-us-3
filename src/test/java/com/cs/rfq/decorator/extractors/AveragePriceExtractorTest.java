@@ -23,24 +23,35 @@ public class AveragePriceExtractorTest {
         rfq = new Rfq();
         rfq.setEntityId(5561279226039690843L);
         rfq.setIsin("AT0000383864");
-
-        String filePath = getClass().getResource("avgPrice-traded-1.json").getPath();
         session = SparkSession.builder()
                 .appName("BiasExtractorTestSession")
                 .master("local")
                 .getOrCreate();
-        trades = new TradeDataLoader().loadTrades(session, filePath);
     }
 
     @Test
-    public void testAveragePriceExtractor() {
+    public void testAveragePriceExtractorWithAveragePrice() {
+        String filePath = getClass().getResource("avgPrice-traded-1.json").getPath();
+        trades = new TradeDataLoader().loadTrades(session, filePath);
         AveragePriceExtractor extractor = new AveragePriceExtractor();
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object avgPrice = meta.get(RfqMetadataFieldNames.averagePriceTradedByEntityPastWeek);
 
-
-
         assertEquals(138.4396D, avgPrice);
     }
+
+    @Test
+    public void testAveragePriceExtractorWithZeroAveragePrice() {
+        String filePath = getClass().getResource("volume-traded-1.json").getPath();
+        trades = new TradeDataLoader().loadTrades(session, filePath);
+        AveragePriceExtractor extractor = new AveragePriceExtractor();
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object avgPrice = meta.get(RfqMetadataFieldNames.averagePriceTradedByEntityPastWeek);
+
+        assertEquals(0D, avgPrice);
+    }
+
+
 }
